@@ -1,0 +1,60 @@
+logging:
+  level:
+    root: info
+
+server:
+  tomcat:
+    max-connections: 2000
+    threads:
+      max: 200
+      min-spare: 10
+    uri-encoding: UTF-8
+    max-swallow-size: -1
+    max-http-form-post-size: -1
+    connection-timeout: 5000
+    keep-alive-timeout: 65000
+
+#server.shutdown: graceful
+#spring.lifecycle.timeout-per-shutdown-phase: 60s
+
+spring:
+  flyway:
+    baseline-on-migrate: true
+    enabled: false
+    locations: classpath:db/migration
+  jpa:
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: none
+        format_sql: true
+        query.in_clause_parameter_padding: true
+        default_batch_fetch_size: 50
+        connection.provider_disables_autocommit: true
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    auto-commit: false
+    connection-timeout: 3000
+    max-lifetime: 50000
+    pool-name: HikariCP-Writer
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  flyway:
+    enabled: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/test
+    # jdbc:h2:mem:maindb;INIT=create domain if not exists jsonb as json;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: postgres
+    password: postgres
+  sql:
+    init:
+      data-locations: classpath:db/data.sql
+      schema-locations: classpath:db/schema.sql
+      mode: never

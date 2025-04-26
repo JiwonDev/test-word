@@ -1,0 +1,2 @@
+# GET
+GET {{host}}/sample/hello
