@@ -84,11 +84,11 @@ class ApiTraceServletFilter(
         }
 
         val fullLog =
-            "[${this::class.simpleName}] $method $requestUri$queryString " +
+            "[${this::class.simpleName}]\n$method $requestUri$queryString " +
                     "| Status=$status " +
                     "| Duration=${duration}ms" +
 //                    "| RequestBody=$requestBody " +
-//                    "| ResponseBody=$responseBody" +
+                    "| ResponseBody=$responseBody" +
                     (exception?.let { " | Exception=${it.javaClass.simpleName}" } ?: "")
 
         if (status < 400)

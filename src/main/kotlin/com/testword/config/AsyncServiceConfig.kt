@@ -1,10 +1,8 @@
 package com.testword.config
 
-import com.testword.service.SampleService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
@@ -13,7 +11,6 @@ import java.util.concurrent.Executor
 
 @Configuration
 @EnableAsync
-@Import(SampleService::class)
 class AsyncServiceConfig : AsyncConfigurer {
 
     override fun getAsyncExecutor(): Executor {

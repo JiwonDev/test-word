@@ -1,0 +1,109 @@
+### 다양한 금칙어 포함 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "You fucking idiot, you dumbass moron. What a bastard!"
+}
+
+> {%
+    const longText = "This is a very long content with 개새끼 inserted. ".repeat(300);
+    client.global.set("longContent", longText);
+
+    client.test("다양한 금칙어 포함 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Must detect multiple forbidden terms");
+        client.log("Detected terms:", response.body.data.terms);
+    });
+%}
+
+### 한국어 욕설 포함 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "너 개새끼냐 병신아"
+}
+
+> {%
+    client.test("한국어 욕설 포함 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Must detect Korean forbidden terms");
+    });
+%}
+
+### 영어+한글 욕설 섞인 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "You dumb fuck 개병신."
+}
+
+> {%
+    client.test("영어+한글 욕설 섞인 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Must detect both English and Korean forbidden terms");
+    });
+%}
+
+### 특수문자 섞은 금칙어 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "You are such a f*u*c*k*i*n*g."
+}
+
+> {%
+    client.test("특수문자 섞은 금칙어 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === false, "Should NOT detect forbidden terms with special characters without cleaning");
+    });
+%}
+
+### 긴 글 + 금칙어 삽입 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "{{longContent}} fuck {{longContent}} bastard {{longContent}}"
+}
+
+> {%
+    client.test("긴 글 + 금칙어 삽입 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Should detect forbidden terms even within very long content");
+    });
+%}
+
+### 금칙어 반복 사용 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "fuck fuck fuck fuck fuck dumbass dumbass dumbass"
+}
+
+> {%
+    client.test("금칙어 반복 사용 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Should detect forbidden terms even if repeated multiple times");
+        client.assert(response.body.data.terms.length > 0, "At least some forbidden terms should be detected");
+    });
+%}
+
+### 금칙어 아님 유사 단어 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "He is a master of crafts. Not a bastard."
+}
+
+> {%
+    client.test("금칙어 아님 유사 단어 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Must detect 'bastard' and not mistake 'master'");
+    });
+%}

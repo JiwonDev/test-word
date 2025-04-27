@@ -31,6 +31,7 @@ class ControllerExceptionAdvice(
         if (e is MethodArgumentTypeMismatchException)
             return "잘못된 요청입니다. (${e.name}=${e.value})"
 
+        log.error(e) { "[makeErrorMessage] ${e.message}" }
         return messageSourceAccessor.getMessage(e.javaClass.simpleName, "서비스에 문제가 발생했습니다.")
     }
 
