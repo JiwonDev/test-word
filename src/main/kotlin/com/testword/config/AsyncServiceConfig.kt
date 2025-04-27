@@ -14,7 +14,7 @@ import java.util.concurrent.Executor
 @Configuration
 @EnableAsync
 @Import(SampleService::class)
-class ServiceConfig : AsyncConfigurer {
+class AsyncServiceConfig : AsyncConfigurer {
 
     override fun getAsyncExecutor(): Executor {
         val threadPoolTaskExecutor = ThreadPoolTaskExecutor()

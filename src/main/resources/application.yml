@@ -2,6 +2,20 @@ logging:
   level:
     root: info
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    enable:
+      all: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+
 server:
   tomcat:
     max-connections: 2000
