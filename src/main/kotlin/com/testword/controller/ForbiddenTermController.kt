@@ -5,8 +5,10 @@ import com.testword.common.Response
 import com.testword.controller.dto.CheckContentReq
 import com.testword.controller.dto.ForbiddenTermCheckRes
 import com.testword.controller.dto.RegisterForbiddenTermsReq
-import com.testword.service.ForbiddenTermService
+import com.testword.service.forbidden_term.ForbiddenTermService
+import com.testword.service.forbidden_term.ForbiddenTermServiceTreeImpl
 import kotlinx.coroutines.runBlocking
+import org.springframework.context.annotation.Import
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/terms")
+@Import(ForbiddenTermServiceTreeImpl::class)
 class ForbiddenTermController(
     private val forbiddenTermService: ForbiddenTermService,
 ) {
@@ -47,6 +50,15 @@ class ForbiddenTermController(
         @RequestBody request: RegisterForbiddenTermsReq,
     ): EmptyResponse {
         forbiddenTermService.registerForbiddenTerms(request.terms)
+        return EmptyResponse()
+    }
+
+    /**
+     * 금칙어 리스트를 재생성한다.
+     */
+    @PostMapping("/refresh")
+    fun refreshForbiddenTerms(): EmptyResponse {
+        forbiddenTermService.reload()
         return EmptyResponse()
     }
 }

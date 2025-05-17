@@ -32,6 +32,9 @@ server:
 #spring.lifecycle.timeout-per-shutdown-phase: 60s
 
 spring:
+  docker:
+    compose:
+      enabled: false
   flyway:
     baseline-on-migrate: true
     enabled: false
@@ -60,11 +63,10 @@ spring:
     activate:
       on-profile: local
   flyway:
-    enabled: false
+    enabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/test
-    # jdbc:h2:mem:maindb;INIT=create domain if not exists jsonb as json;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    jdbc-url: jdbc:postgresql://postgres:5432/test
     username: postgres
     password: postgres
   sql:

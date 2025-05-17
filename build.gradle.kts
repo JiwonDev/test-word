@@ -65,7 +65,12 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("org.postgresql:postgresql")
 
+    // 카페인 캐시 (인메모리)
+    implementation("com.github.ben-manes.caffeine:caffeine:${Version.caffeine}")
+
+    // 형태소 분석기
     implementation("org.openkoreantext:open-korean-text:${Version.openKoreanText}")
+    implementation("com.ibm.icu:icu4j:${Version.icu4j}")
 
     runtimeOnly("com.h2database:h2")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
@@ -73,14 +78,14 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:${Version.kotlinTestJunit5}")
     testImplementation("io.kotest:kotest-assertions-core:${Version.kotestAssertionsCore}")
+    testImplementation("io.kotest:kotest-runner-junit5:${Version.kotestAssertionsCore}")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:${Version.kotestExtensionsSpring}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("io.mockk:mockk:${Version.mockk}")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 dependencyManagement {
@@ -104,16 +109,22 @@ allOpen {
 }
 
 tasks.withType<Test> {
-    minHeapSize = "1024m"
-    maxHeapSize = "2048m"
-    jvmArgs = listOf("-Xshare:off")
     useJUnitPlatform()
 }
-
+springBoot {
+    mainClass.set("com.testword.TestWordApplicationKt")
+}
 sourceSets {
     main {
         java {
             srcDirs("build/generated/source/kapt/main")
         }
     }
+}
+tasks.jar {
+    enabled = false
+}
+
+tasks.bootJar {
+    enabled = true
 }

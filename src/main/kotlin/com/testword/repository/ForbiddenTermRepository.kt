@@ -12,6 +12,7 @@ interface ForbiddenTermRepository : JpaRepository<ForbiddenTerm, Long>, CustomFo
 
 interface CustomForbiddenTermRepository {
     fun findAllTerms(): List<String>
+    fun findMatchingTerms(lowered: String, earlyReturn: Boolean): List<String>
 }
 
 class CustomForbiddenTermRepositoryImpl(
@@ -25,5 +26,20 @@ class CustomForbiddenTermRepositoryImpl(
             .select(qForbiddenTerm.term)
             .from(qForbiddenTerm)
             .fetch()
+    }
+
+    private val qForbiddenTerm = QForbiddenTerm.forbiddenTerm
+
+    override fun findMatchingTerms(content: String, earlyReturn: Boolean): List<String> {
+        val query = jpaQueryFactory
+            .select(qForbiddenTerm.term)
+            .from(qForbiddenTerm)
+            .where(qForbiddenTerm.term.lower().like("%${content}%"))
+
+        if (earlyReturn) {
+            query.limit(1)
+        }
+
+        return query.fetch()
     }
 }

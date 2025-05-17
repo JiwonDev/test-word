@@ -48,17 +48,32 @@ Content-Type: application/json
 %}
 
 ### 특수문자 섞은 금칙어 테스트
-POST {{host}}/terms/check
+POST localhost:8080/terms/check
 Content-Type: application/json
 
 {
-  "content": "You are such a f*u*c*k*i*n*g."
+  "content": "You are such a fu ck *i*n*g."
 }
 
 > {%
     client.test("특수문자 섞은 금칙어 테스트", () => {
         client.assert(response.status === 200, "Status must be 200 OK");
-        client.assert(response.body.data.hasForbiddenTerm === false, "Should NOT detect forbidden terms with special characters without cleaning");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Should detect forbidden terms with special characters without cleaning");
+    });
+%}
+
+### 한국어 욕설 포함 테스트
+POST {{host}}/terms/check
+Content-Type: application/json
+
+{
+  "content": "너 개새끼냐 병신아"
+}
+
+> {%
+    client.test("한국어 욕설 포함 테스트", () => {
+        client.assert(response.status === 200, "Status must be 200 OK");
+        client.assert(response.body.data.hasForbiddenTerm === true, "Must detect Korean forbidden terms");
     });
 %}
 

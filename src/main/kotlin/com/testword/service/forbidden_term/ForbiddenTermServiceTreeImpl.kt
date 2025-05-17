@@ -1,45 +1,48 @@
-package com.testword.service
+package com.testword.service.forbidden_term
 
 import com.testword.entity.ForbiddenTerm
 import com.testword.repository.ForbiddenTermRepository
+import com.testword.service.ForbiddenTermChecker
 import com.testword.service.dto.ForbiddenTermCheckResult
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import org.springframework.stereotype.Service
+import java.util.*
 
-@Service
-class ForbiddenTermService(
+class ForbiddenTermServiceTreeImpl(
     private val repo: ForbiddenTermRepository,
     private val checker: ForbiddenTermChecker,
-) {
+) : ForbiddenTermService {
     private val log = KotlinLogging.logger {}
 
     private fun reloadForbiddenTerms() {
         val terms = repo.findAllTerms()
-            .map(String::lowercase)
+            .map { it.lowercase(Locale.ROOT) }
             .toSet()
 
         checker.reloadTerms(terms)
-        log.info { "Reloaded forbidden terms: \n$terms" }
     }
 
     @PostConstruct
-    fun load() {
+    override fun reload() {
         reloadForbiddenTerms()
     }
 
     /**
      * 새로운 금지어 등록 후 트리 리로드
      */
-    fun registerForbiddenTerms(rawTokens: List<String>) {
+
+    override fun registerForbiddenTerms(rawTokens: List<String>) {
         val inputTokens = rawTokens
-            .map(String::lowercase)
+            .map { it.lowercase(Locale.ROOT) }
             .filter { it.isNotBlank() }
             .toSet()
 
         if (inputTokens.isEmpty()) return
 
-        val existing = repo.findAllTerms().toSet()
+        val existing = repo.findAllTerms()
+            .map { it.lowercase(Locale.ROOT) }
+            .toSet()
+
         val needInsert = inputTokens - existing
         if (needInsert.isEmpty()) return
 
@@ -50,14 +53,11 @@ class ForbiddenTermService(
     /**
      * 텍스트에서 금지어 검사
      */
-    fun checkForbiddenTerms(
+    override fun checkForbiddenTerms(
         content: String,
-        earlyReturn: Boolean = false,
+        earlyReturn: Boolean,
     ): ForbiddenTermCheckResult {
         val matched = checker.findForbiddenTerms(content, earlyReturn)
-        return ForbiddenTermCheckResult(
-            hasForbiddenTerm = matched.isNotEmpty(),
-            matchedTerms = matched
-        )
+        return ForbiddenTermCheckResult(matched.isNotEmpty(), matched)
     }
 }
