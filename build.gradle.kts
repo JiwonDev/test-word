@@ -59,6 +59,7 @@ dependencies {
     // Querydsl
     implementation("com.querydsl:querydsl-jpa:${Version.querydslJpa}")
     kapt("com.querydsl:querydsl-apt:${Version.querydslJpa}")
+    implementation("com.vladmihalcea:hibernate-types-60:${Version.hibernateTypes60Version}")
 
     // Flyway + Database
     implementation("org.flywaydb:flyway-core")

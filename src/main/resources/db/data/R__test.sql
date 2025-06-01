@@ -2305,4 +2305,4 @@ values (1, 'fuck', null, 'anonymous', '2025-04-27 07:10:22.085393', 'anonymous',
        (2165, '강아지', null, 'anonymous', '2025-05-17 01:40:09.451099', 'anonymous', '2025-05-17 01:40:09.451099');
 
 ALTER TABLE forbidden_term
-    ALTER COLUMN id RESTART WITH 2165;
+    ALTER COLUMN id RESTART WITH 2166;

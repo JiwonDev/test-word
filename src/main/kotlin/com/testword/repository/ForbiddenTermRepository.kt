@@ -12,7 +12,7 @@ interface ForbiddenTermRepository : JpaRepository<ForbiddenTerm, Long>, CustomFo
 
 interface CustomForbiddenTermRepository {
     fun findAllTerms(): List<String>
-    fun findMatchingTerms(lowered: String, earlyReturn: Boolean): List<String>
+    fun findMatchingTerms(content: String, earlyReturn: Boolean): List<String>
 }
 
 class CustomForbiddenTermRepositoryImpl(

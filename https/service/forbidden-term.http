@@ -3,12 +3,11 @@ POST {{host}}/terms/check
 Content-Type: application/json
 
 {
-  "content": "You fucking idiot, you dumbass moron. What a bastard!"
+  "contentId": 1,
+  "earlyReturn": false
 }
 
 > {%
-    const longText = "This is a very long content with 개새끼 inserted. ".repeat(300);
-    client.global.set("longContent", longText);
 
     client.test("다양한 금칙어 포함 테스트", () => {
         client.assert(response.status === 200, "Status must be 200 OK");

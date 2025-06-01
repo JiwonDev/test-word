@@ -1,23 +1,26 @@
 services:
-  postgres:
+  test-postgres:
     image: 'postgres:16'
+    container_name: test-postgres
     environment:
-      - 'POSTGRES_DB=test'
-      - 'POSTGRES_PASSWORD=postgres'
-      - 'POSTGRES_USER=postgres'
+      - POSTGRES_DB=test
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
     ports:
       - '5432:5432'
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 4g
+    mem_limit: 4g
+    cpus: 2.0
+    volumes:
+      - test-postgres-data:/var/lib/postgresql/data
+
   prometheus:
     image: prom/prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    mem_limit: 4g
+    cpus: 2.0
 
   grafana:
     image: grafana/grafana
@@ -31,6 +34,8 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    mem_limit: 4g
+    cpus: 2.0
 
   influxdb:
     image: influxdb:1.8
@@ -43,23 +48,24 @@ services:
       - INFLUXDB_ADMIN_ENABLED=true
       - INFLUXDB_ADMIN_USER=admin
       - INFLUXDB_ADMIN_PASSWORD=admin
+    mem_limit: 8g
+    cpus: 4.0
 
   spring-app:
     image: my-spring-app
     ports:
       - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 4g
+    mem_limit: 4g
+    cpus: 2.0
     environment:
       - SPRING_PROFILES_ACTIVE=local
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/test
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://test-postgres:5432/test
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
-      - postgres
+      - test-postgres
+
 volumes:
+  test-postgres-data:
   grafana-data:
   influxdb-data:

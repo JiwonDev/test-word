@@ -14,5 +14,6 @@ object Version {
     const val kotestAssertionsCore = "5.9.1"
     const val mockk = "1.14.0"
     const val openKoreanText = "2.1.0"
+    const val hibernateTypes60Version = "2.21.1"
 
 }

@@ -63,10 +63,10 @@ spring:
     activate:
       on-profile: local
   flyway:
-    enabled: true
+    enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://postgres:5432/test
+    jdbc-url: jdbc:postgresql://localhost:5432/test
     username: postgres
     password: postgres
   sql:

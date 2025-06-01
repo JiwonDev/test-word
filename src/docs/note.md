@@ -99,5 +99,20 @@ stages: [
     - 1차 테스트 보다 3배 지연
 - <img src="img/img2425.png" alt="설명" width="400"/>
 - <img src="img/img1592.png" alt="설명" width="400"/>
+- <img src="img/img1243.png" alt="설명" width="400"/>
 
-![img.png](img/img1243.png)
+
+> 3차 테스트
+```
+stages: [
+    {duration: '30s', target: 90},
+    {duration: '1m', target: 120},
+    {duration: '2m', target: 150},
+    {duration: '3m', target: 180},
+    {duration: '4m', target: 210},
+    {duration: '5m', target: 0},
+]
+```
+- 캐시 제거
+- <img src="img/img12399.png" alt="설명" width="400"/>
+- <img src="img/img124192.png" alt="설명" width="400"/>

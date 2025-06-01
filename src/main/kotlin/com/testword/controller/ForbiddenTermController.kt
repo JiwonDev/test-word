@@ -5,6 +5,7 @@ import com.testword.common.Response
 import com.testword.controller.dto.CheckContentReq
 import com.testword.controller.dto.ForbiddenTermCheckRes
 import com.testword.controller.dto.RegisterForbiddenTermsReq
+import com.testword.service.dto.ForbiddenTermCheckResult
 import com.testword.service.forbidden_term.ForbiddenTermService
 import com.testword.service.forbidden_term.ForbiddenTermServiceTreeImpl
 import kotlinx.coroutines.runBlocking
@@ -28,16 +29,17 @@ class ForbiddenTermController(
     fun checkForbiddenTerms(
         @RequestBody request: CheckContentReq,
     ): Response<ForbiddenTermCheckRes> {
-        val result = runBlocking {
+        val result: ForbiddenTermCheckResult = runBlocking {
             forbiddenTermService.checkForbiddenTerms(
-                content = request.content,
+                contentId = request.contentId,
                 earlyReturn = request.earlyReturn
             )
         }
         return Response(
             ForbiddenTermCheckRes(
                 hasForbiddenTerm = result.hasForbiddenTerm,
-                terms = result.matchedTerms
+                terms = result.matchedTerms,
+                termCounts = result.termCounts
             )
         )
     }

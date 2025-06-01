@@ -6,4 +6,5 @@ package com.testword.controller.dto
 data class ForbiddenTermCheckRes(
     val hasForbiddenTerm: Boolean,
     val terms: List<String>,
+    val termCounts: Map<String, Int>,
 )
